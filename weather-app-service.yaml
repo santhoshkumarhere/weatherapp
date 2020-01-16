@@ -1,0 +1,37 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: weather-app
+  labels:
+    run: weather-app
+spec:
+  type: NodePort
+  ports:
+  - nodePort: 30163
+    port: 9005
+    targetPort: 9001
+    protocol: TCP
+  selector:
+    app: weatherapp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-app
+  labels:
+    app: weatherapp
+spec:
+  replicas: 2
+  selector:
+   matchLabels:
+    app: weatherapp
+  template:
+   metadata:
+    labels:
+     app: weatherapp
+   spec:
+    containers:
+    - name: backend
+      image: santhoshkumarhere/weatherapp:7.0
+      ports:
+        - containerPort: 9001
