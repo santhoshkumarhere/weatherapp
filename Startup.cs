@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using weatherapp.Configuration;
 
 namespace weatherapp
 {
@@ -25,6 +20,13 @@ namespace weatherapp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            //services.AddDistributedRedisCache(options =>
+            //{
+            //    options.Configuration = Configuration.GetValue<string>("redis:host");
+            //    options.InstanceName = Configuration.GetValue<string>("redis:name");
+            //});
+            services.AddSingleton<IRedisConnectionFactory, RedisConnectionFactory>();
+            //IConnectionMultiplexer redis = ConnectionMultiplexer.Connect("10.0.75.1");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,7 +40,6 @@ namespace weatherapp
             app.UseRouting();
 
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

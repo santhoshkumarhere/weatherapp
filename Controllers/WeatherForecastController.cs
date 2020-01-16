@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using weatherapp.Configuration;
 
 namespace weatherapp.Controllers
 {
@@ -17,21 +19,28 @@ namespace weatherapp.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IRedisConnectionFactory _fact;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IRedisConnectionFactory fact)
         {
             _logger = logger;
+            _fact = fact;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            //_cache.SetString("CacheTest", "Santhosh is awesome");
+            var db =_fact.Connection().GetDatabase();
+            db.StringSet("CacheTest", "Santhosh is awesome");
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
+                Summary = Summaries[rng.Next(Summaries.Length)],
+                //Sandy = _cache.GetString("CacheTest")
+                Sandy = db.StringGet("CacheTest")
             })
             .ToArray();
         }
