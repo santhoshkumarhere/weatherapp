@@ -21,7 +21,7 @@ metadata:
   labels:
     app: weatherapp
 spec:
-  replicas: 2
+  replicas: 1
   selector:
    matchLabels:
     app: weatherapp
@@ -32,6 +32,6 @@ spec:
    spec:
     containers:
     - name: backend
-      image: santhoshkumarhere/weatherapp:7.0
+      image: santhoshkumarhere/weatherapp:8.0
       ports:
         - containerPort: 9001
