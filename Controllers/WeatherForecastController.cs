@@ -30,16 +30,13 @@ namespace weatherapp.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            //_cache.SetString("CacheTest", "Santhosh is awesome");
-            var db =_fact.Connection().GetDatabase();
-            db.StringSet("CacheTest", "Santhosh is awesome");
+            var db =_fact.GetDatabase();
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
                 Summary = Summaries[rng.Next(Summaries.Length)],
-                //Sandy = _cache.GetString("CacheTest")
                 Sandy = db.StringGet("CacheTest")
             })
             .ToArray();
